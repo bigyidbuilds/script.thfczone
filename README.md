@@ -1,2 +1,6 @@
 # script.thfczone
- Xbmc Addon for Spurs fans
+ Xbmc/Kodi Addon for Spurs fans
+
+## Installation via THFC Zone Repository 
+
+https://bigyidbuilds.github.io 
