@@ -142,166 +142,7 @@ def DateTimeToday():
 	DTT = datetime.today()
 	return DTT
 
-def dbCreateTableHeaders(file,table,headers):
-	cursor = dbConnect(file)
-	cursor.execute('CREATE TABLE IF NOT EXISTS {}({})'.format(table,headers))
-	conn = cursor.connection 
-	conn.close()
 
-def dbConnect(file):
-	conn = sqlite3.connect(file)
-	cursor = conn.cursor()
-	return cursor
-
-def dbCountRows(file,table):
-	cursor =  dbConnect(file)
-	result = cursor.execute("SELECT count(*) FROM {}".format(table)) 
-	num_of_rows = result.fetchone()[0]
-	return num_of_rows
-
-def dbDeleteTableContent(file,table):
-	#Delete contents of database file table
-	cursor = dbConnect(file)
-	sql = "DELETE FROM {}".format(table)
-	cursor.execute(sql)
-	conn = cursor.connection
-	conn.commit()
-	conn.close()
-
-def dbDeleteFrom(file,table,col,match):
-	cursor = dbConnect(file)
-	sql = 'DELETE FROM {} WHERE {}=?'.format(table,col)
-	cursor.execute(sql, (match,))
-	conn = cursor.connection
-	conn.commit()
-	conn.close()
-
-def dbDropTable(filename,tablename):
-	if PathExists(filename):
-		conn = sqlite3.connect(filename)
-		cursor = conn.cursor()
-		sql = "DROP TABLE IF EXISTS {};".format(tablename)
-		cursor.execute(sql)
-		conn.commit()
-		conn.close()
-
-
-def dbIsInTable(file,table,row_header,check_item):
-	'''Returns True or False if item is in a row'''
-	cursor = dbConnect(file)
-	cursor.execute("select "+str(row_header)+" from "+str(table)+" where "+str(row_header)+"=?", (check_item,))
-	data = cursor.fetchall()
-	if not data:
-		check = False
-	if data:
-		check = True 
-	conn = cursor.connection 
-	conn.close()  
-	return check
-
-def dbReadAll(file,table):
-	DB_list = list()
-	cursor = dbConnect(file)
-	for row in cursor.execute('SELECT * FROM '+str(table)):
-		DB_list.append(row)
-	conn = cursor.connection 
-	conn.close()
-	return DB_list
-
-def dbReadCol(file,table,column):
-	cc = list()
-	cursor = dbConnect(file)
-	for row in cursor.execute('SELECT {} FROM {}'.format(column,table)):	
-		cc.append(row)
-	conn = cursor.connection 
-	conn.close()
-	return cc
-
-
-def dbReadColMatch(file,table,column_header,return_column,check_item):
-	#returns a column match single item,return column is the item for return and column header is the one to be matched  return column and  row_header can be same column or different depending on return required
-	cursor = dbConnect(file)
-	if dbTableExists(file,table):
-		cursor.execute("SELECT {} FROM {} WHERE {}=?".format(return_column,table,column_header), (check_item,))
-		match = cursor.fetchone()
-		conn = cursor.connection 
-		conn.close()
-		if match:
-			return match[0]
-		else:
-			return None
-	else:
-		return None
-
-def dbReadRows(filename,table):
-	#Read Rows of db table and return as a list
-	DB_list = list()
-	if PathExists(filename) and dbTableExists(filename,table):
-		conn = sqlite3.connect(filename)
-		cursor = conn.cursor()
-		for row in cursor.execute('SELECT * FROM {}'.format(table)):
-			DB_list.append(row)
-	return DB_list
-
-def dbReadMatch(file,table,row_header,check_item):
-	#returns a row were row_header value matchs check_item
-	cursor = dbConnect(file)
-	cursor.execute("SELECT * FROM "+str(table)+" WHERE "+str(row_header)+"=?", (check_item,))
-	match = cursor.fetchone()
-	conn = cursor.connection 
-	conn.close()
-	return match
-
-def dbReadMultiCol(file,table,column_headers):
-	# column headers is a string of column names  column_headers = 'a_column,b_column'
-	cursor = dbConnect(file)
-	cursor.execute("SELECT {} FROM {}".format(column_headers,table))
-	results = cursor.fetchall()
-	conn = cursor.connection 
-	conn.close()
-	return results
-
-def dbTableExists(filename,tablename):
-	check = False
-	if PathExists(filename):
-		conn = sqlite3.connect(filename)
-		cursor = conn.cursor()
-		sql = "SELECT name FROM sqlite_master WHERE type='table'"
-		cursor.execute(sql)
-		tables = cursor.fetchall()
-		for table in tables:
-			if table[0] == tablename:
-				check = True
-		conn = cursor.connection 
-		conn.close()
-	return check
-
-def dbTableNames(file):
-	cursor = dbConnect(file)
-	sql = "SELECT name FROM sqlite_master WHERE type='table'"
-	cursor.execute(sql)
-	tables = cursor.fetchall()
-	return tables
-
-
-def dbWrite(file,table,items):
-	headers = list()
-	for i in range(len(items)):
-		headers.append('?')
-	headers = ','.join(headers)
-	cursor = dbConnect(file)
-	cursor.execute("INSERT INTO {} VALUES ({})".format(table,headers),items)
-	conn = cursor.connection
-	conn.commit()
-	conn.close()
-
-def dbUpdate(file,tablename,change_column,new_value):
-	cursor = dbConnect(file)
-	sql =  'UPDATE {} SET {} = ?'.format(tablename,change_column)
-	cursor.execute(sql,(new_value,))
-	conn = cursor.connection
-	conn.commit()
-	conn.close()
 
 def DelAllContents(path,ignore_errors=True):
 	if PathExists(path):
@@ -428,8 +269,6 @@ def PathExists(path):
 	else:
 		return False
 
-def refresh_container():
-	xbmc.executebuiltin("XBMC.Container.Refresh")
 
 def ReplaceMulti(string,replace_items):
 	#replace_items is a dict with keys {'to replace':'replacement'}
@@ -441,10 +280,6 @@ def RemoveFormatting(label):
 	label = re.sub(r"\[/?[BI]\]",'',label)
 	label = re.sub(r"\[/?COLOR.*?\]",'',label)
 	return label
-
-def RunModule(url='',mode='',name='',description=''):
-	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&description="+urllib.quote_plus(description)
-	xbmc.executebuiltin('XBMC.RunPlugin({})'.format(u))
 
 def SettingDefault(settingID):
 	tree = ET.parse(SETTINGS_XML)
