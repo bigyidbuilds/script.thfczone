@@ -39,7 +39,7 @@ class LockableSqliteConnection(object):
 
 class cacheData():
 
-	pastseasons  = ['2019-2020','2018-2019','2017-2018','2016-2017']
+	pastseasons  = ['2020-2021','2019-2020','2018-2019','2017-2018','2016-2017']
 	cleartables  = ['season_2019_2020','presant_season','next_fixture','league_table']
 	podcastfeeds = [('https://rss.acast.com/thefightingcock','Fighting Cock PodCast'),
 					('https://rss.acast.com/theextrainch','The Extra Inch'),
