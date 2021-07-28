@@ -22,7 +22,7 @@ class WindowMatchCenter(xbmcgui.WindowXML):
 	defaultSkin = 'Default'
 	defaultRes  = '720p'
 
-	FILTER_SEASON_LIST = ['2020-2021','2019-2020','2018-2019','2017-2018','2016-2017']
+	FILTER_SEASON_LIST = ['2021-2022','2020-2021','2019-2020','2018-2019','2017-2018','2016-2017']
 
 	FILTER_GROUP  = 1000
 	FILTER_SEASON = 1001
@@ -223,16 +223,17 @@ class WindowMatchCenter(xbmcgui.WindowXML):
 			stadium = ''
 			if optaId:
 				matchdetail = tottenhamhotspur.GetMAtchDetails(optaId)
-				ht_matchdetail = matchdetail.get('Home')
-				at_matchdetail = matchdetail.get('Away')
-				referee = matchdetail.get('Referee')
-				stadium = matchdetail.get('Stadium')
-				for a in ht_matchdetail.get('Scorers'):
-					ht_scores += a.get('Surname')+' '+a.get('GoalTimes')+'\n'
-				for b in at_matchdetail.get('Scorers'):
-					at_scores += b.get('Surname')+' '+b.get('GoalTimes')+'\n'
-				if matchdetail.get('ShowAggregateScore'):
-					score = '('+str(ht_matchdetail.get('AggregateScore'))+') '+score+' ('+str(at_matchdetail.get('AggregateScore'))+')'
+				if matchdetail:
+					ht_matchdetail = matchdetail.get('Home')
+					at_matchdetail = matchdetail.get('Away')
+					referee = matchdetail.get('Referee')
+					stadium = matchdetail.get('Stadium')
+					for a in ht_matchdetail.get('Scorers'):
+						ht_scores += a.get('Surname')+' '+a.get('GoalTimes')+'\n'
+					for b in at_matchdetail.get('Scorers'):
+						at_scores += b.get('Surname')+' '+b.get('GoalTimes')+'\n'
+					if matchdetail.get('ShowAggregateScore'):
+						score = '('+str(ht_matchdetail.get('AggregateScore'))+') '+score+' ('+str(at_matchdetail.get('AggregateScore'))+')'
 			liz = xbmcgui.ListItem(game[0].strftime('%d %b %y'))
 			matchreportUrl = game[12]
 			liz.setProperties({'hometeam':game[2],'awayteam':game[3],'compname':game[1],'score':score,'optaId':optaId,'matchId':game[9],'matchreportUrl':game[12],'matchdate_str':game[11],'tag':game[13],'tag_id':game[14],'matchdatetime':str(ToTimeStamp(game[0])),'ht_scores':ht_scores,'at_scores':at_scores,'stadium':stadium,'referee':referee})
