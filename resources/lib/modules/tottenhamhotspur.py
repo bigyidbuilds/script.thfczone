@@ -25,7 +25,7 @@ import requests
 from urllib import parse as urlparse
 from dateutil import tz
 
-from resources.lib.modules._common import Log
+from resources.lib.modules._common import DateTimeNow,Log
 
 http                 = 'http'
 https                = 'https'
@@ -39,6 +39,7 @@ mediasite            = 'open.http.mp.streamamg.com'
 
 baseurl = urlparse.urlunparse((https,site,'',None,None,None))
 #season results api
+season_2021_2022 = urlparse.urlunparse((https,site,GetFixturesForSeason,None,'seasonId=368169',None))
 season_2020_2021 = urlparse.urlunparse((https,site,GetFixturesForSeason,None,'seasonId=336987',None))
 season_2019_2020 = urlparse.urlunparse((https,site,GetFixturesForSeason,None,'seasonId=193556',None))
 season_2018_2019 = urlparse.urlunparse((https,site,GetFixturesForSeason,None,'seasonId=49596',None))
@@ -90,7 +91,7 @@ def GetFixturesForSeason(season):
 		season = season.replace('-','_')
 		apiurl = eval('season_{}'.format(season))
 	except NameError:
-		apiurl = season_2020_2021
+		apiurl = season_2021_2022
 	html = requests.get(apiurl,headers=headers)
 	data = html.json()
 	for dat in data:
